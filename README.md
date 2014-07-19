@@ -20,11 +20,9 @@ WillsLib.DBupdate(connection, table_name, set, which)
 	`{column:attribute}`. Set is what you want to change, and which is where you want to change it. If you want to change Zachary's address, you'd
 	do this:
 	
-	```python
 	DBupdate("connection", "table_name", {'address':'7278 Main St.'}, {'Name':'Zachary'})
-	```
-	You can also set all the table elements to have a certain attribute by passing 'all' to which instead of a dictionary. 
 	
-	```python
+	
+You can also set all the table elements to have a certain attribute by passing 'all' to which instead of a dictionary. 
+	
 	DBupdate("connection", "hitlist", {"status":"dead"}, 'all')
-	```
