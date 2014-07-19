@@ -14,3 +14,17 @@ WillsLib.DBselect(connection, table_name, columns)
 
 WillsLib.DBcreate(connection, table_name, columns)
 	Runs a sqlite3 "create" command with the given connection to create the given named table with the given columns. Columns are in an array of strings. 
+	
+WillsLib.DBupdate(connection, table_name, set, which)
+	Updates the given columns with the given attributes in the "set" variable. Set and which are dictionaries, and they are in the format
+	`{column:attribute}`. Set is what you want to change, and which is where you want to change it. If you want to change Zachary's address, you'd
+	do this:
+	
+	```python
+	DBupdate("connection", "table_name", {'address':'7278 Main St.'}, {'Name':'Zachary'})
+	```
+	You can also set all the table elements to have a certain attribute by passing 'all' to which instead of a dictionary. 
+	
+	```python
+	DBupdate("connection", "hitlist", {"status":"dead"}, 'all')
+	```
