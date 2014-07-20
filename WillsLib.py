@@ -5,7 +5,6 @@ import tkinter as tk
 # one and a DBselect to get all of them. 
 # Also, it would be cool to have a table object that is really python-y instead of
 # all annoying and sql-y. 
-# In 2.4, there is iteritems(), in 3 there is just items(). *sigh*
 def DBinsert(connection, table_name, vals):
 	s = 'insert into '+table_name+' VALUES (?'
 	for i in range(len(vals)-1):
@@ -58,4 +57,12 @@ def DBupdate(connection, table_name, set, which):
 		for i in sorted(which.keys()):
 			params.append(str(i)+' = ?')
 		connection.cursor().execute("update "+table_name+" SET "+', '.join(strings)+" WHERE "+' and '.join(params),tuple([j for j in sorted(set.values())]+[i for i in sorted(which.values())]))
+	connection.commit()
+def DBdelete(connection, table_name, which):
+	if which == 'all':
+		connection.cursor().execute("delete from %s" % table_name)
+		db.commit()
+		return
+	strings = [i + " = ?" for i in sorted(which.keys())]
+	connection.cursor().execute("delete from "+table_name+" WHERE "+' and '.join(strings),tuple([i for i in sorted(which.values())]))
 	connection.commit()
