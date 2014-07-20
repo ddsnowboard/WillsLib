@@ -3,7 +3,7 @@ import tkinter as tk
 # Put main DB interface functions from tshirtPicker in here. Generalize them, and they'll be useful. 
 # Instead of this 'if params' business, just have a DBget() to get a specific 
 # one and a DBselect to get all of them. 
-# Also, it would be cool to have a table object that is really python-y instead of
+# Also, it would be cool to have a table object that is really pythonic instead of
 # all annoying and sql-y. 
 def DBinsert(connection, table_name, vals):
 	s = 'insert into '+table_name+' VALUES (?'
@@ -12,7 +12,7 @@ def DBinsert(connection, table_name, vals):
 	s+=');'
 	connection.cursor().execute(s, tuple(vals))
 	connection.commit()
-def DBselect(connection, table_name, columns):
+def DBselect(connection, table_name, columns, which):
 	out = []
 	if columns == 'all':
 		columns = ['*']
@@ -21,8 +21,13 @@ def DBselect(connection, table_name, columns):
 			columns[i] = str(j)
 	else:
 		columns = [str(columns)]
-	for i in connection.cursor().execute('select '+', '.join(columns) +' from '+table_name):
-		out.append(i)
+	if which == 'all':
+		for i in connection.cursor().execute('select '+', '.join(columns) +' from '+table_name):
+			out.append(i)
+	else:
+		strings = [i + " = ?" for i in sorted(which.keys())]
+		for i in connection.cursor().execute("select %s from %s WHERE %s" % (', '.join(columns), table_name, ' and '.join(strings)), tuple([i for i in sorted(which.values())])):
+			out.append(i)
 	return out
 def DBcreate(connection, table_name, columns):
 	s = 'create table '+table_name+'('
