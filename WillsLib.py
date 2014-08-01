@@ -1,18 +1,24 @@
 import sqlite3
-import tkinter as tk
 # Put main DB interface functions from tshirtPicker in here. Generalize them, and they'll be useful. 
-# Instead of this 'if params' business, just have a DBget() to get a specific 
-# one and a DBselect to get all of them. 
 # Also, it would be cool to have a table object that is really pythonic instead of
 # all annoying and sql-y.
 
 # Update this to be able to use a dictionary. 
 def DBinsert(connection, table_name, vals):
-	s = 'insert into '+table_name+' VALUES (?'
-	for i in range(len(vals)-1):
-		s+=",?"
-	s+=');'
-	connection.cursor().execute(s, tuple(vals))
+	if type(vals) == type([]):
+		s = 'insert into '+table_name+' VALUES (?'
+		for i in range(len(vals)-1):
+			s += ",?"
+		s+=');'
+		connection.cursor().execute(s, tuple(vals))
+	elif type(vals) == type({}):
+		s = 'insert into %s(' % table_name
+		s += ','.join(sorted(vals.keys()))
+		s+=') VALUES (?'
+		for i in range(len(vals.values())):
+			s +=',?'
+		s += ');'
+		connection.cursor().execute(s, tuple(sorted(vals.values())))		
 	connection.commit()
 def DBselect(connection, table_name, columns, which):
 	out = []

@@ -6,7 +6,7 @@ My library of python functions that I use often/like to have around, beginning w
 
 ######WillsLib.DBinsert(connection, table_name, vals)
 
-Runs a sqlite3 "insert" command with the connection on the table name given. This is the name of the table within the .db file itself. `vals` is a list such that `vals[0]` is the first column, `vals[1]` is the second, and so on. You must fill all columns in your table, else there will be an error. I may fix this soon. 
+Runs a sqlite3 "insert" command with the connection on the table name given. This is the name of the table within the .db file itself. `vals` is a list such that `vals[0]` is the first column, `vals[1]` is the second, and so on. Or, you can give `vals` as a dictionary in the form {`key:value}`
 
 
 ######WillsLib.DBselect(connection, table_name, columns, which)
