@@ -1,9 +1,4 @@
 import sqlite3
-# Put main DB interface functions from tshirtPicker in here. Generalize them, and they'll be useful. 
-# Also, it would be cool to have a table object that is really pythonic instead of
-# all annoying and sql-y.
-
-# Update this to be able to use a dictionary. 
 def DBinsert(connection, table_name, vals):
 	if type(vals) == type([]):
 		s = 'insert into '+table_name+' VALUES (?'
