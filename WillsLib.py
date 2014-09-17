@@ -91,3 +91,16 @@ def squares():
 		yield out
 		out+=odd
 		odd+=2
+# This generator should kick out primes forever, given enough memory and time. 
+def primes():
+	yield 2
+	prime = True
+	out = 3
+	while True:
+		for i in range(2, int(out/2)+1):
+			if out%i==0:
+				prime = False
+				break
+		if prime:
+			yield out
+		out+=2
