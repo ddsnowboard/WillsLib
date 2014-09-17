@@ -83,3 +83,11 @@ def DBdelete(connection, table_name, which):
 	strings = [sanitize(i)+ " = ?" for i in which.keys()]
 	connection.cursor().execute("delete from "+sanitize(table_name)+" WHERE "+' and '.join(strings),tuple([i for i in which.values()]))
 	connection.commit()
+# A generator that will generate perfect squares forever. 
+def squares():
+	out = 1
+	odd = 3
+	while True:
+		yield out
+		out+=odd
+		odd+=2
