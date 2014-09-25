@@ -1,4 +1,6 @@
 import sqlite3
+import re
+from collections import defaultdict
 def sanitize(string):
 	WORD_LIST = ['ABORT', 'ACTION', 'ADD', 'AFTER', 'ALL', 'ALTER', 'ANALYZE', 'AND', 'AS', 'ASC', 'ATTACH', 'AUTOINCREMENT', 'BEFORE', 'BEGIN', 'BETWEEN', 'BY', 'CASCADE', 'CASE', 'CAST', 'CHECK', 'COLLATE', 'COLUMN', 'COMMIT', 'CONFLICT', 'CONSTRAINT', 'CREATE', 'CROSS', 'CURRENT_DATE', 'CURRENT_TIME', 'CURRENT_TIMESTAMP', 'DATABASE', 'DEFAULT', 'DEFERRABLE', 'DEFERRED', 'DELETE', 'DESC', 'DETACH', 'DISTINCT', 'DROP', 'EACH', 'ELSE', 'END', 'ESCAPE', 'EXCEPT', 'EXCLUSIVE', 'EXISTS', 'EXPLAIN', 'FAIL', 'FOR', 'FOREIGN', 'FROM', 'FULL', 'GLOB', 'GROUP', 'HAVING', 'IF', 'IGNORE', 'IMMEDIATE', 'IN', 'INDEX', 'INDEXED', 'INITIALLY', 'INNER', 'INSERT', 'INSTEAD', 'INTERSECT', 'INTO', 'IS', 'ISNULL', 'JOIN', 'KEY', 'LEFT', 'LIKE', 'LIMIT', 'MATCH', 'NATURAL', 'NO', 'NOT', 'NOTNULL', 'NULL', 'OF', 'OFFSET', 'ON', 'OR', 'ORDER', 'OUTER', 'PLAN', 'PRAGMA', 'PRIMARY', 'QUERY', 'RAISE', 'RECURSIVE', 'REFERENCES', 'REGEXP', 'REINDEX', 'RELEASE', 'RENAME', 'REPLACE', 'RESTRICT', 'RIGHT', 'ROLLBACK', 'ROW', 'SAVEPOINT', 'SELECT', 'SET', 'TABLE', 'TEMP', 'TEMPORARY', 'THEN', 'TO', 'TRANSACTION', 'TRIGGER', 'UNION', 'UNIQUE', 'UPDATE', 'USING', 'VACUUM', 'VALUES', 'VIEW', 'VIRTUAL', 'WHEN', 'WHERE', 'WITH', 'WITHOUT']
 	for i in WORD_LIST:
@@ -104,3 +106,51 @@ def primes():
 		if prime:
 			yield out
 		out+=2
+# This is a class for polynomial equations. Give it the equation as a string, and you can evaluate it and maybe find the intersection
+# with another line. 
+class Equation:
+	def __init__(self, eq):	# y=2x^2-3x+5
+		self.coefficients = defaultdict(float)
+		self.eq = re.subn(r"^y=|=y$", '', eq)[0]   # 2x^2-3x+5
+		self.eq = self.eq.replace('^', '**').replace("+", " +").replace("-", ' -')  # 2x**2 -3x +5
+		self.terms = self.eq.split(" ")	 # "2x**2", "-3x", "+5"
+		self.terms = [i for i in self.terms if i != '']
+		for i in self.terms:
+			if not re.compile(r"[A-Za-z]").search(i):
+				self.coefficients[0] += float(i)  # "+5"
+			elif re.compile(r"[\+-]?[\d\.]+[A-Za-z]$").search(i):
+				self.coefficients[1]+=float(re.compile(r"[A-Za-z]").subn('',i)[0])  	#"-3" 
+			elif re.compile(r"[\+-]?[\d\.]+[A-Za-z]\*\*\d+").match(i):
+				self.coefficients[i[i.index("**")+2:]] += float(i[:re.compile("[A-Za-z]").search(i).span()[1]-1]) # '2'
+		self.degree = len(self.coefficients)-1
+	def evaluate(self, x):
+		end = 0
+		for i, j in self.coefficients.items():
+			end+=j*x**i
+		return end
+	def intersect(self, other):
+		if not type(other) == type(Equation("2x^2-4x+5")):
+			raise Exception("You seem to have made a stupid; this is supposed to take another equation and find the intersection")
+			return
+		# Left will be variables; right will be constants. 
+		# Left starts as self, right starts as other. 
+		left = defaultdict(float)
+		right = 0
+		for i, j in self.coefficients.items():
+			if i == 0:
+				right-=j
+			else:
+				left[i]+=j
+		for i, j in other.coefficients.items():
+			if i == 0:
+				right+=j
+			else:
+				left[i]-=j
+		if self.degree == 0 and other.degree == 0:
+			return right == 0
+		elif self.degree<=1 and other.degree<=1:
+			return (right/left[1], self.evaluate(right/left[1]))
+		elif self.degree == 2 or other.degree == 2:
+			return (((-1*left[1]+math.sqrt(left[1]**2-4*(left[2])*(-1*right)))/(2*left[2]), self.evaluate((-1*left[1]+math.sqrt(left[1]**2-4*(left[2])*(-1*right)))/(2*left[2]))), ((-1*left[1]-math.sqrt(left[1]**2-4*(left[2])*(-1*right)))/(2*left[2]), self.evaluate((-1*left[1]-math.sqrt(left[1]**2-4*(left[2])*(-1*right)))/(2*left[2]))))
+		else:
+			raise Error("I really can't get an accurate intersection with just this data.")
