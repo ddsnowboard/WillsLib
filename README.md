@@ -34,3 +34,42 @@ You can also set all the table elements to have a certain attribute by passing '
 ######WillsLib.DBdelete(connection, table_name, which)
 
 Deletes the entries dictated by `which` in the given table, `table_name`. `which` is a dictionary in the format `{attribute:value}`, just like in DBupdate(). 
+
+######WillsLib.sanitize(string)
+
+This is an attempt at sanitizing database inputs. If this were Java, it would probably be a private function, but it's not, so it isn't. It goes through a list of sqlite3 keywords and makes sure they're not in the input in a way that will cause problems, and either makes them safer or throws an error if it finds one.
+
+######WillsLib.primes()
+
+This will return a prime number generator, using the brute force method, with a slight optimization. 
+
+
+######WillsLib.squares()
+
+This returns a perfect square generator that is actually pretty fast. 
+
+######*class* WillsLib.Equation(equation)
+
+This returns an instance of the Equation object, made with the given equation in string form. It must have an equal sign. You can use either `^` or `**` for exponentiation. You can use any letter for the variable, but you must be consistent. 
+
+######Equation methods:
+
++######Equation.evaluate(x)
+
+This evaluates the equation for the given input. 
+
++######Equation.intersect(other)
+
+Given another Equation, this finds the intersection of them if possible. It's not very robust, but it works sometimes. 
+
+######WillsLib.myIndex(list, value, func = lambda x: x)
+
+This is my own (probably slower) implementation of python's list.index() function. This allows you to set what aspect of each item you 
+want to check, similar to the default list.sort() function. For example, if I want to find the first thing in a list that has a length 
+of 5, I could say
+
+```
+WillsLib.myIndex(l, 5, len)
+```
+
+and it would return the index of that in the list. 
