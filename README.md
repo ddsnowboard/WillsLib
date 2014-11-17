@@ -56,11 +56,11 @@ This returns an instance of the Equation object, made with the given equation in
 
 + Equation.evaluate(x)
 
-This evaluates the equation for the given input. 
+  +This evaluates the equation for the given input. 
 
 + Equation.intersect(other)
 
-Given another Equation, this finds the intersection of them if possible. It's not very robust, but it works sometimes. 
+  +Given another Equation, this finds the intersection of them if possible. It's not very robust, but it works sometimes. 
 
 ######WillsLib.myIndex(list, value, func = lambda x: x)
 
