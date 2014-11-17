@@ -54,11 +54,11 @@ This returns an instance of the Equation object, made with the given equation in
 
 ######Equation methods:
 
-+######Equation.evaluate(x)
++ Equation.evaluate(x)
 
 This evaluates the equation for the given input. 
 
-+######Equation.intersect(other)
++ Equation.intersect(other)
 
 Given another Equation, this finds the intersection of them if possible. It's not very robust, but it works sometimes. 
 
