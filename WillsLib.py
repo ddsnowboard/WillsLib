@@ -155,3 +155,7 @@ class Equation:
 			return (((-1*left[1]+math.sqrt(left[1]**2-4*(left[2])*(-1*right)))/(2*left[2]), self.evaluate((-1*left[1]+math.sqrt(left[1]**2-4*(left[2])*(-1*right)))/(2*left[2]))), ((-1*left[1]-math.sqrt(left[1]**2-4*(left[2])*(-1*right)))/(2*left[2]), self.evaluate((-1*left[1]-math.sqrt(left[1]**2-4*(left[2])*(-1*right)))/(2*left[2]))))
 		else:
 			raise Error("I really can't get an accurate intersection with just this data.")
+def myIndex(l, value, func = lambda x: x):
+	for i, j in enumerate(l):
+		if func(j) == value:
+			return i
