@@ -160,3 +160,26 @@ def myIndex(l, value, func = lambda x: x):
 	for i, j in enumerate(l):
 		if func(j) == value:
 			return i
+			
+def tabsToList(input_list, output_filename, type = "ordered"):
+	with open(output_filename, "w") as w:
+		tabs = lambda x: x.count("\t")
+		if type == "ordered":
+			tag = ["<ol>", "</ol>"]
+		elif type == "unordered":
+			tag = ["<ul>", "</ul>"]
+		# In case they give it to me as a file. 
+		l = list(input_list)
+		depth = 0
+		w.write("<html>{}".format(tag[0]))
+		for n, i in enumerate(l):
+			if tabs(i) > depth:
+				w.write(tag[0])
+			elif tabs(i) < depth:
+				for p in range(depth - tabs(i)):
+					w.write("{}</li>".format(tag[1]))
+			w.write("<li>{}".format(i))
+			if tabs(i) < depth:
+				for p in range(tabs(i)-depth):
+					w.write(tag[1])
+			depth = tabs(i)
