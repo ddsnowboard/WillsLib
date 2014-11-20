@@ -1,3 +1,4 @@
+# This is a file that I use to test new functions. 
 from WillsLib import *
 import sqlite3
 db = sqlite3.connect('test.db')
