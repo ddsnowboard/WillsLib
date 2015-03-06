@@ -183,3 +183,9 @@ def tabsToList(input_list, output_filename, type = "ordered"):
 				for p in range(tabs(i)-depth):
 					w.write(tag[1])
 			depth = tabs(i)
+def myRange(start, stop, step = 1):
+	yield start
+	out = start + step
+	while out < stop:
+		yield out
+		out += step
