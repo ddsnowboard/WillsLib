@@ -81,4 +81,4 @@ This takes a text file (or just a list of lines) that is indented with tabs and 
 
 ######WillsLib.myRange(start, stop, step)
 
-A version of range/xrange that returns a generator that goes from start (inclusive) to stop (exclusive) by step each time. It is not as fast as range/xrange, but it supports floats. 
+A version of range/xrange that returns a generator that goes from `start` (inclusive) to `stop` (exclusive) by `step` each time. It is not as fast as range/xrange, but it supports floats. 
