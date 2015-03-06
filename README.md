@@ -78,3 +78,7 @@ and it would return the index of that in the list.
 ######WillsLib.tabsToList(input_list, output_filename, type = "ordered")
 
 This takes a text file (or just a list of lines) that is indented with tabs and turns it into an HTML file that is indented with the given type (ordered or unordered) of HTML list. The formatting of the HTML isn't too pretty, so you might want to run it through a formatter, but it does work. 
+
+######WillsLib.myRange(start, stop, step)
+
+A version of range/xrange that returns a generator that goes from start (inclusive) to stop (exclusive) by step each time. It is not as fast as range/xrange, but it supports floats. 
