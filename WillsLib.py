@@ -189,3 +189,10 @@ def myRange(start, stop, step = 1):
 	while out < stop:
 		yield out
 		out += step
+def euler(f, x, x0, y0, h):
+	currx = x0
+	curry = y0
+	while currx < x:
+		curry = curry + f(currx, curry)*h
+		currx += h
+	return curry
