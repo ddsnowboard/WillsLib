@@ -11,5 +11,5 @@ from WillsLib import *
 # print("\n\n\n")
 # print(DBselect(db, 'test', 'all', 'all'))
 
-eulerTable(lambda x, y: y, 5, 0, 1, .5)
+eulerTable(lambda x, y: y, 5, 0, 1, .5, True)
 print(euler(lambda x, y: y, 5, 0, 1, .01))

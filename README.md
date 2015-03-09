@@ -82,3 +82,11 @@ This takes a text file (or just a list of lines) that is indented with tabs and 
 ######WillsLib.myRange(start, stop, step)
 
 A version of range/xrange that returns a generator that goes from `start` (inclusive) to `stop` (exclusive) by `step` each time. It is not as fast as range/xrange, but it supports floats. 
+
+######WillsLib.euler(function, x, x0, y0, h)
+
+A function that solves certain differential equations by using Euler's method. `function` is a lambda or regular function that takes two arguments, which will be `x` and `y`. `x0` and `y0` are the initial conditions, and `h` is Δx or the step-size. 
+
+######WillsLib.eulerTable(function, x, x0, y0, h, mainloop)
+
+Similar to euler(), but creates a table in a tkinter window which lists every step. `mainloop` is a boolean that tells whether `mainloop()` should be run at the end. 
