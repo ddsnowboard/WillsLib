@@ -196,3 +196,23 @@ def euler(f, x, x0, y0, h):
 		curry = curry + f(currx, curry)*h
 		currx += h
 	return curry
+def eulerTable(f, x, x0, y0, h):
+	import tkinter as tk
+	root = tk.Tk()
+	class EulerRow(tk.Frame):
+		def __init__(self, master, *args):
+			tk.Frame.__init__(self, master)
+			self.master = master
+			for i in args:
+				box = tk.Entry(self, width=5)
+				box.insert(0, i)
+				box.config(state='readonly')
+				box.pack(side="left")
+	currx = x0
+	curry = y0
+	EulerRow(root, 'x', 'y', 'F(x, y)', 'dx', 'dy').pack()
+	EulerRow(root, currx, curry, f(currx, curry), h, f(currx, curry) * h).pack()
+	while currx < x:
+		curry = curry + f(currx, curry) * h
+		currx += h
+		EulerRow(root, currx, curry, f(currx, curry), h, f(currx, curry) * h).pack()
