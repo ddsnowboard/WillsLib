@@ -223,13 +223,14 @@ def factors(integer):
 		raise Exception("{} is not an integer!".format(integer))
 	out = {}
 	curr = integer
-	i = integer
+	i = 1
 	while curr != 1:
-		i -= 1
-		if curr % i == 0 and i != 1:
-			out[i] = True
-		elif i == 1:
+		i += 1
+		if curr % i == 0:
+			out[int(i)] = True
+			out[int(curr/i)] = True
+		elif i > integer / 2:
 			if not out:
-				return "{} is prime".format(integer)
+				return []
 			else:
 				return sorted([i for i, j in out.items() if j])

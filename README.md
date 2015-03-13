@@ -90,3 +90,7 @@ A function that solves certain differential equations by using Euler's method. `
 ######WillsLib.eulerTable(function, x, x0, y0, h, mainloop)
 
 Similar to euler(), but creates a table in a tkinter window which lists every step. `mainloop` is a boolean that tells whether `mainloop()` should be run at the end. 
+
+######WillsLib.factors(integer)
+
+Returns a list of all the factors of a number except itself and 1, or an empty list if it is prime. It runs in n/2 time always, so it is rather slow, but it works. 
