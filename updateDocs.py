@@ -1,5 +1,2 @@
-import urllib.parse
-import urllib.request
-
-URL = http://c.docverter.com/convert
-data = {
+make a bat file that uses curl and this. 
+http://www.docverter.com/api#Languages
