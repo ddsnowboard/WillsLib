@@ -218,3 +218,18 @@ def eulerTable(f, x, x0, y0, h, mainloop):
 		EulerRow(root, currx, curry, f(currx, curry), h, f(currx, curry) * h).pack()
 	if mainloop:
 		root.mainloop()
+def factors(integer):
+	if integer % 1 != 0:
+		raise Exception("{} is not an integer!".format(integer))
+	out = {}
+	curr = integer
+	i = integer
+	while curr != 1:
+		i -= 1
+		if curr % i == 0 and i != 1:
+			out[i] = True
+		elif i == 1:
+			if not out:
+				return "{} is prime".format(integer)
+			else:
+				return sorted([i for i, j in out.items() if j])
