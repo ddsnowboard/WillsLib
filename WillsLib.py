@@ -246,7 +246,6 @@ class PrimeFactorizer:
         # list as I go. 
         counter = 0
         while True:
-            print(current_number)
             if current_number in self.primes:
                 out.append(current_number)
                 return out
