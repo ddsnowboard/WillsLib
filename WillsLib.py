@@ -2,19 +2,22 @@ import sqlite3
 import re
 from collections import defaultdict
 import math
+from fractions import Fraction
 def sanitize(string):
 	WORD_LIST = ['ABORT', 'ACTION', 'ADD', 'AFTER', 'ALL', 'ALTER', 'ANALYZE', 'AND', 'AS', 'ASC', 'ATTACH', 'AUTOINCREMENT', 'BEFORE', 'BEGIN', 'BETWEEN', 'BY', 'CASCADE', 'CASE', 'CAST', 'CHECK', 'COLLATE', 'COLUMN', 'COMMIT', 'CONFLICT', 'CONSTRAINT', 'CREATE', 'CROSS', 'CURRENT_DATE', 'CURRENT_TIME', 'CURRENT_TIMESTAMP', 'DATABASE', 'DEFAULT', 'DEFERRABLE', 'DEFERRED', 'DELETE', 'DESC', 'DETACH', 'DISTINCT', 'DROP', 'EACH', 'ELSE', 'END', 'ESCAPE', 'EXCEPT', 'EXCLUSIVE', 'EXISTS', 'EXPLAIN', 'FAIL', 'FOR', 'FOREIGN', 'FROM', 'FULL', 'GLOB', 'GROUP', 'HAVING', 'IF', 'IGNORE', 'IMMEDIATE', 'IN', 'INDEX', 'INDEXED', 'INITIALLY', 'INNER', 'INSERT', 'INSTEAD', 'INTERSECT', 'INTO', 'IS', 'ISNULL', 'JOIN', 'KEY', 'LEFT', 'LIKE', 'LIMIT', 'MATCH', 'NATURAL', 'NO', 'NOT', 'NOTNULL', 'NULL', 'OF', 'OFFSET', 'ON', 'OR', 'ORDER', 'OUTER', 'PLAN', 'PRAGMA', 'PRIMARY', 'QUERY', 'RAISE', 'RECURSIVE', 'REFERENCES', 'REGEXP', 'REINDEX', 'RELEASE', 'RENAME', 'REPLACE', 'RESTRICT', 'RIGHT', 'ROLLBACK', 'ROW', 'SAVEPOINT', 'SELECT', 'SET', 'TABLE', 'TEMP', 'TEMPORARY', 'THEN', 'TO', 'TRANSACTION', 'TRIGGER', 'UNION', 'UNIQUE', 'UPDATE', 'USING', 'VACUUM', 'VALUES', 'VIEW', 'VIRTUAL', 'WHEN', 'WHERE', 'WITH', 'WITHOUT']
 	for i in WORD_LIST:
-		if ' '+i.lower()+' ' in string.lower() or ', '+i.lower() in string.lower() or string.lower() == i.lower():
+		if ' ' + i.lower() + ' ' in string.lower() or ', '+i.lower() in string.lower() or string.lower() == i.lower():
 			if i == 'DROP':
 				raise Exception("You should not have used \"Drop\" in your input. Please use a different word")
 			else:
 				string = string.lower().replace(i.lower(),"'"+i.lower()+"'")
 	return string
 def DBinsert(connection, table_name, vals):
+	if type(vals) == type(()):
+		vals = list(vals)
 	if type(vals) == type([]):
-		s = 'insert into '+sanitize(table_name)+' VALUES (?'
-		for i in range(len(vals)-1):
+		s = 'insert into ' + sanitize(table_name) + ' VALUES (?'
+		for i in range(len(vals) - 1):
 			s += ",?"
 		s+=');'
 		connection.cursor().execute(s, tuple(vals))
@@ -55,12 +58,12 @@ def DBupdate(connection, table_name, set, which):
 	# Set and which will be dictionaries that have the syntax {column: value}
 	# "Which" could also be the string "all"
 	if not set:
-		raise Exception("""You didn't give the right parameters!\nYou need 
+		raise Exception("""You didn't give the right parameters!\nYou need
 						 to give 2 dictionaries, \"set\" and \"which\", that\n
 						 are in the format {attribute:value}. See the \n
 						 documentation for more details.""")
 	elif not which:
-		raise Exception("""You didn't give the right parameters!\nYou need 
+		raise Exception("""You didn't give the right parameters!\nYou need
 						 to give 2 dictionaries, \"set\" and \"which\", that\n
 						 are in the format {attribute:value}. See the \n
 						 documentation for more details.\n
@@ -68,47 +71,49 @@ def DBupdate(connection, table_name, set, which):
 						 which='all'""")
 	strings = []
 	for i in set.keys():
-		strings.append(sanitize(str(i))+' = ?')
+		strings.append(sanitize(str(i)) + ' = ?')
 	if which == 'all':
-		connection.cursor().execute("update "+sanitize(table_name)+" SET "+', '.join(strings),tuple([j for j in set.values()]))
+		connection.cursor().execute("update " + sanitize(table_name) + " SET " + ', '.join(strings), tuple([j for j in set.values()]))
 		connection.commit()
 	else:
 		params = []
 		for i in which.keys():
 			params.append(sanitize(str(i))+' = ?')
-		connection.cursor().execute("update "+table_name+" SET "+', '.join(strings)+" WHERE "+' and '.join(params),tuple([j for j in set.values()]+[i for i in which.values()]))
+		connection.cursor().execute("update " + table_name + " SET "+', '.join(strings)+" WHERE "+' and '.join(params), tuple([j for j in set.values()] + [i for i in which.values()]))
 	connection.commit()
 def DBdelete(connection, table_name, which):
 	if which == 'all':
 		connection.cursor().execute("delete from %s" % sanitize(table_name))
 		db.commit()
 		return
-	strings = [sanitize(i)+ " = ?" for i in which.keys()]
-	connection.cursor().execute("delete from "+sanitize(table_name)+" WHERE "+' and '.join(strings),tuple([i for i in which.values()]))
+	strings = [sanitize(i) + " = ?" for i in which.keys()]
+	connection.cursor().execute("delete from " + sanitize(table_name) + " WHERE " + ' and '.join(strings), tuple([i for i in which.values()]))
 	connection.commit()
-# A generator that will generate perfect squares forever. 
+# A generator that will generate perfect squares forever.
 def squares():
 	out = 1
 	odd = 3
 	while True:
 		yield out
-		out+=odd
-		odd+=2
-# This generator will kick out primes forever, given enough memory and time.  
+		out += odd
+		odd += 2
 def primes():
+	"""
+	This generator will kick out primes forever, given enough memory and time.
+	"""
 	yield 2
 	prime = True
 	out = 3
 	while True:
 		prime = True
 		for i in range(2, int(math.sqrt(out))+1):
-			if out%i==0:
+			if out %i ==0:
 				prime = False
 		if prime:
 			yield out
-		out+=2
+		out += 2
 # This is a class for polynomial equations. Give it the equation as a string, and you can evaluate it and maybe find the intersection
-# with another line. 
+# with another line.
 def roundUp(i):
 	"""
 	I'm sure this is unnecessary, but I apparently couldn't find a good way to
@@ -234,7 +239,7 @@ class Equation:
 			return right == 0
 		elif self.degree <= 1 and other.degree <= 1 :
 			return (right/left[1], self.evaluate(right/left[1]))
-		# Runs the quadratic equation if a degree is two. 
+		# Runs the quadratic equation if a degree is two.
 		elif self.degree == 2 or other.degree == 2:
 			return (((-1*left[1]+math.sqrt(left[1]**2-4*(left[2])*(-1*right)))/(2*left[2]), self.evaluate((-1*left[1]+math.sqrt(left[1]**2-4*(left[2])*(-1*right)))/(2*left[2]))), ((-1*left[1]-math.sqrt(left[1]**2-4*(left[2])*(-1*right)))/(2*left[2]), self.evaluate((-1*left[1]-math.sqrt(left[1]**2-4*(left[2])*(-1*right)))/(2*left[2]))))
 		else:
@@ -288,7 +293,7 @@ def myIndex(l, value, func = lambda x: x):
 	for i, j in enumerate(l):
 		if func(j) == value:
 			return i
-			
+
 def tabsToList(input_list, output_filename, type = "ordered"):
 	with open(output_filename, "w") as w:
 		tabs = lambda x: x.count("\t")
@@ -296,7 +301,7 @@ def tabsToList(input_list, output_filename, type = "ordered"):
 			tag = ["<ol>", "</ol>"]
 		elif type == "unordered":
 			tag = ["<ul>", "</ul>"]
-		# In case they give it to me as a file. 
+		# In case they give it to me as a file.
 		l = list(input_list)
 		depth = 0
 		w.write("<html>{}".format(tag[0]))
@@ -370,8 +375,8 @@ class PrimeFactorizer:
     def factorize(self, number):
         out = []
         current_number = number
-        # I have to do this weird for loop thing because I'm changing the length of the 
-        # list as I go. 
+        # I have to do this weird for loop thing because I'm changing the length of the
+        # list as I go.
         counter = 0
         while True:
             if current_number in self.primes:
@@ -385,5 +390,5 @@ class PrimeFactorizer:
                 out.append(self.primes[counter])
                 current_number /= self.primes[counter]
                 counter = 0
-            else: 
+            else:
                 counter += 1
