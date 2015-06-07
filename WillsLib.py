@@ -234,3 +234,29 @@ def factors(integer):
 				return []
 			else:
 				return sorted([i for i, j in out.items() if j])
+class PrimeFactorizer:
+    def __init__(self):
+        self.primes = []
+        self.prime_generator = primes()
+        self.primes.append(next(self.prime_generator))
+    def factorize(self, number):
+        out = []
+        current_number = number
+        # I have to do this weird for loop thing because I'm changing the length of the 
+        # list as I go. 
+        counter = 0
+        while True:
+            print(current_number)
+            if current_number in self.primes:
+                out.append(current_number)
+                return out
+            elif current_number == 1:
+                return out
+            if len(self.primes) == counter and number not in self.primes:
+                self.primes.append(next(self.prime_generator))
+            if current_number % self.primes[counter] == 0:
+                out.append(self.primes[counter])
+                current_number /= self.primes[counter]
+                counter = 0
+            else: 
+                counter += 1
