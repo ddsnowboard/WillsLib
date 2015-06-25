@@ -121,13 +121,23 @@ class DatabaseTest(unittest.TestCase):
         """
         Tests the DBinsert() function of WillsLib
         """
-        test_values = [("audi", "bmw", "cadillac"), ("amperstand", "bang", "comma"), ("alligator", "bear", "cat"), ("Anglo-saxon", "Belarusan", "Croatian")]
+        test_values = [("audi", "bmw", "cadillac"), ("amperstand", "bang", "comma"), ("alligator", "bear", "cat"), ("Anglo-saxon", "Belarusan", "Croatian"),
+                {DatabaseTest.column_names[0]:"Arrhenious", DatabaseTest.column_names[1]:"base", DatabaseTest.column_names[2]:"chemistry"}]
         c = self.connection.cursor()
         for i in test_values:
-            with self.subTest(values=i):
+            with self.subTest(values=i, type=type(i)):
                 WillsLib.DBinsert(self.connection, self.table_name, i)
                 # This would be unsafe, but this is just a unit test and I have a pretty good idea if what the inputs will be. 
-                c.execute("select * from {name} where a = '{l[0]}' and b = '{l[1]}' and c = '{l[2]}'".format(name=self.table_name, l=i))
-                self.assertEqual(c.fetchone(), i)
+                # Set up something so that it checks and if the input is a dictionary, it does this dictionary style. 
+                # or, better yet, think of a properly elegant solution
+                if type(i) == type(()):
+                    c.execute("select * from {name} where a = '{l[0]}' and b = '{l[1]}' and c = '{l[2]}'".format(name=self.table_name, l=i))
+                    self.assertEqual(c.fetchone(), i)
+                elif type(i) == type({}):
+                    c.execute("select * from {name} where a = '{colone}' and b = '{coltwo}' and c = '{colthree}'".format(name=self.table_name, 
+                        colone=i[self.column_names[0]],
+                        coltwo=i[self.column_names[1]],
+                        colthree=i[self.column_names[2]]))
+                    self.assertEqual(c.fetchone(), tuple(sorted(i.values())))
 if __name__ == "__main__":
     unittest.main()
