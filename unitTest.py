@@ -99,7 +99,10 @@ class DatabaseTest(unittest.TestCase):
     table_name = "TABLE_TEST"
     column_names = ["A", "B", "C"]
     def setUp(self):
-        print("ran")
+        """
+        Starts up database and opens up connection for other tests. 
+        Inserts a few rows to for testing of select function. 
+        """
         self.connection = sql.connect(self.file_name)
         c = self.connection.cursor()
         c.execute("create table {} ({})".format(self.table_name, ",".join(self.column_names)))
@@ -109,14 +112,21 @@ class DatabaseTest(unittest.TestCase):
             c.execute("insert into {} VALUES ('{}')".format(self.table_name, "','".join(i)))
         self.connection.commit()
     def tearDown(self):
+        """
+        Cleans out directory and closes everything. 
+        """
         self.connection.close()
         remove(self.file_name)
-    def test_insert(self):
-        test_values = [("audi", "bmw", "cadillac"), ("amperstand", "bang", "comma")]
+    def test_DBinsert(self):
+        """
+        Tests the DBinsert() function of WillsLib
+        """
+        test_values = [("audi", "bmw", "cadillac"), ("amperstand", "bang", "comma"), ("alligator", "bear", "cat"), ("Anglo-saxon", "Belarusan", "Croatian")]
         c = self.connection.cursor()
         for i in test_values:
             with self.subTest(values=i):
                 WillsLib.DBinsert(self.connection, self.table_name, i)
+                # This would be unsafe, but this is just a unit test and I have a pretty good idea if what the inputs will be. 
                 c.execute("select * from {name} where a = '{l[0]}' and b = '{l[1]}' and c = '{l[2]}'".format(name=self.table_name, l=i))
                 self.assertEqual(c.fetchone(), i)
 if __name__ == "__main__":
