@@ -13,13 +13,9 @@ def sanitize(string):
                 string = string.lower().replace(i.lower(),"'"+i.lower()+"'")
     return string
 def DBinsert(connection, table_name, vals):
+    STATEMENT = "insert into {table_name}({keys}) VALUES ({slots});"
     if type(vals) == type({}):
-        s = 'insert into %s(' % sanitize(table_name)
-        s += ','.join([sanitize(i) for i in vals.keys()])
-        s+=') VALUES (?'
-        for i in range(len(vals.values())-1):
-            s +=',?'
-        s += ');'
+        s = STATEMENT.format(table=table_name, keys=",".join(((sanitze(i) for i in vals.keys()))), slots=",".join(("?" for i in vals.values())))
         connection.cursor().execute(s, tuple(vals.values()))
     else:
         s = 'insert into ' + sanitize(table_name) + ' VALUES (?'
