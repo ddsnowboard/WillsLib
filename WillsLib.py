@@ -13,17 +13,15 @@ def sanitize(string):
                 string = string.lower().replace(i.lower(),"'"+i.lower()+"'")
     return string
 def DBinsert(connection, table_name, vals):
-    STATEMENT = "insert into {table_name}({keys}) VALUES ({slots});"
-    if type(vals) == type({}):
-        s = STATEMENT.format(table=table_name, keys=",".join(((sanitze(i) for i in vals.keys()))), slots=",".join(("?" for i in vals.values())))
+   DICT_STATEMENT = "insert into {table_name}({keys}) VALUES ({slots});"
+   LIST_STATEMENT = "insert into {table_name} VALUES ({slots});"
+   if type(vals) == type({}):
+        s = DICT_STATEMENT.format(table_name=sanitize(table_name), keys=",".join(((sanitize(i) for i in vals.keys()))), slots=",".join(("?" for i in vals.values())))
         connection.cursor().execute(s, tuple(vals.values()))
-    else:
-        s = 'insert into ' + sanitize(table_name) + ' VALUES (?'
-        for i in range(len(vals) - 1):
-            s += ",?"
-        s+=');'
+   else:
+        s = LIST_STATEMENT.format(table_name=sanitize(table_name), slots=','.join(("?" for i in vals)))
         connection.cursor().execute(s, tuple(vals))
-    connection.commit()
+        connection.commit()
 def DBselect(connection, table_name, columns, which):
     out = []
     if columns == 'all':
