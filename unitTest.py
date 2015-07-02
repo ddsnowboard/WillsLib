@@ -122,7 +122,7 @@ class DatabaseTest(unittest.TestCase):
         Tests the DBinsert() function of WillsLib
         """
         test_values = [("audi", "bmw", "cadillac"), ("amperstand", "bang", "comma"), ("alligator", "bear", "cat"), ("Anglo-saxon", "Belarusan", "Croatian"),
-                {DatabaseTest.column_names[0]:"Arrhenious", DatabaseTest.column_names[1]:"base", DatabaseTest.column_names[2]:"chemistry"}]
+                {DatabaseTest.column_names[0]:"Arrhenius", DatabaseTest.column_names[1]:"Bronsted-Lowry", DatabaseTest.column_names[2]:"condensation"}]
         c = self.connection.cursor()
         for i in test_values:
             with self.subTest(values=i, type=type(i)):
@@ -139,5 +139,18 @@ class DatabaseTest(unittest.TestCase):
                         coltwo=i[self.column_names[1]],
                         colthree=i[self.column_names[2]]))
                     self.assertEqual(c.fetchone(), tuple(sorted(i.values())))
+    def test_DBselect(self):
+        """
+        Tests the DBselect() function
+        """
+        # Test column and which selections.
+        with self.subTest(test="All columns, all rows"):
+            self.assertListEqual(self.test_rows, WillsLib.DBselect(self.connection, self.table_name, "all", "all"))
+        with self.subTest(test="Some columns, all rows"):
+            self.assertListEqual([(i[0],) for i in self.test_rows], WillsLib.DBselect(self.connection, self.table_name, self.column_names[0], "all"))
+        with self.subTest(test="All columns, some rows"):
+            self.assertListEqual(self.test_rows[:1], WillsLib.DBselect(self.connection, self.table_name, "all", {self.column_names[0]:self.test_rows[0][0]}))
+        with self.subTest(test="Some columns, some rows"):
+            self.assertListEqual([self.test_rows[0][1:2]], WillsLib.DBselect(self.connection, self.table_name, self.column_names[1], {self.column_names[0]:self.test_rows[0][0]}))
 if __name__ == "__main__":
     unittest.main()
