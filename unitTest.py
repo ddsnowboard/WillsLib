@@ -1,3 +1,4 @@
+#! /usr/bin/env python3
 import unittest
 # So I can copy and paste to Newton'sMethod
 import WillsLib as eqSolver
