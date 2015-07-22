@@ -43,24 +43,33 @@ This is an attempt at sanitizing database inputs. If this were Java, it would pr
 
 This will return a prime number generator, using the brute force method, with a slight optimization.
 
-
 ######WillsLib.squares()
 
 This returns a perfect square generator that is actually pretty fast.
 
 ######*class* WillsLib.Equation(equation)
 
-This returns an instance of the Equation object, made with the given equation in string form. It must have an equal sign. You can use either `^` or `**` for exponentiation. You can use any letter for the variable, but you must be consistent.
+This returns an instance of the Equation object, made with the given equation in string form. You can use either `^` or `**` for exponentiation. You can use any letter for the variable, but you must be consistent.
+`equation` is a string of the format `y=Ax(^|**)n + Bx(^|**)(n-1) ... Yx + Z`. Spaces and the `y=` are optional. 
 
 ######Equation methods:
 
 + Equation.evaluate(x)
 
   + This evaluates the equation for the given input.
+  + This can also be done by calling the equation object as if it were a python function. 
 
 + Equation.intersect(other)
 
-  + Given another Equation, this finds the intersection of them if possible. It's not very robust, but it works sometimes.
+  + Given another Equation, this finds the intersection of them if possible. It's not very robust, but it works sometimes. If the equations intersect once, it will give you the intersection. If they intersect infinite times or never (ie, they are paralell), it returns a boolean
+
++ Equation.zero()
+
+  + Returns the zeros of a quadratic function using the quadratic equation. If you call this on a non-quadratic function, it will throw a `WillsLib.ZeroError`. 
+
++ Equation.derivative()
+
+  + Returns a new `Equation` that is the first derivative of the original `Equation`. 
 
 ######WillsLib.myIndex(list, value, func = lambda x: x)
 

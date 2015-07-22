@@ -11,7 +11,7 @@ def sanitize(string):
             if i == 'DROP':
                 raise Exception("You should not have used \"Drop\" in your input. Please use a different word")
             else:
-                string = string.lower().replace(i.lower(),"'"+i.lower()+"'")
+                string = string.lower().replace(i.lower(),"'" + i.lower() + "'")
     return string
 def DBinsert(connection, table_name, vals):
    DICT_STATEMENT = "insert into {table_name}({keys}) VALUES ({slots});"
@@ -41,7 +41,7 @@ def DBselect(connection, table_name, columns, which):
             out.append(i)
     return out
 def DBcreate(connection, table_name, columns):
-    s = 'create table '+sanitize(table_name)+'('
+    s = 'create table ' + sanitize(table_name) + '('
     s+= ', '.join([sanitize(i) for i in columns])
     s+=');'
     print(s)
@@ -199,7 +199,7 @@ class Equation:
         b = self.coefficients[1]
         c = self.coefficients[0]
         try:
-            return tuple(sorted(((-1 * b + math.sqrt(b**2 - 4 * a * c)) / (2 * a), (-1 * b - math.sqrt(b**2 - 4 * a * c)) / (2 * a))))
+            return tuple(sorted(((-1 * b + math.sqrt(b ** 2 - 4 * a * c)) / (2 * a), (-1 * b - math.sqrt(b ** 2 - 4 * a * c)) / (2 * a))))
         except ValueError:
             return None
     def intersect(self, other):
@@ -212,7 +212,6 @@ class Equation:
             raise Exception("Arguments {}, {} don't match Equation, Equation".format(type(self), type(other)))
             return
         # Left will be variables; right will be constants.
-        # Left starts as self, right starts as other.
         left = defaultdict(float)
         right = 0
         # Go through the left hand function (self) and move all the constants to
@@ -234,7 +233,10 @@ class Equation:
             return (right/left[1], self.evaluate(right/left[1]))
         # Runs the quadratic equation if a degree is two.
         elif self.degree == 2 or other.degree == 2:
-            return (((-1*left[1]+math.sqrt(left[1]**2-4*(left[2])*(-1*right)))/(2*left[2]), self.evaluate((-1*left[1]+math.sqrt(left[1]**2-4*(left[2])*(-1*right)))/(2*left[2]))), ((-1*left[1]-math.sqrt(left[1]**2-4*(left[2])*(-1*right)))/(2*left[2]), self.evaluate((-1*left[1]-math.sqrt(left[1]**2-4*(left[2])*(-1*right)))/(2*left[2]))))
+            return (((-1 * left[1] + math.sqrt(left[1]**2 - 4 * (left[2]) * (-1 * right))) / (2 * left[2]), 
+                    self.evaluate((-1 * left[1] + math.sqrt(left[1] ** 2 - 4 * (left[2]) * (-1 * right))) / (2*left[2]))),
+                ((-1 * left[1] - math.sqrt(left[1] ** 2 - 4 * (left[2]) * (-1 * right))) / (2 * left[2]), 
+                    self.evaluate((-1 * left[1] - math.sqrt(left[1] ** 2 - 4 * (left[2]) * (-1 * right))) / (2 * left[2]))))
         else:
             raise Error("I really can't get an accurate intersection with just this data.")
     def __str__(self):
@@ -282,6 +284,7 @@ class Equation:
         self.coefficients[key] = value
     def __call__(self, x):
         return self.evaluate(x)
+
 def myIndex(l, value, func = lambda x: x):
     for i, j in enumerate(l):
         if func(j) == value:
